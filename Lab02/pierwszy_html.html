@@ -1,16 +1,51 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script>
+    <script type="text/javascript">
       var gl;
-      function start()
+      function startGL()
       {
-        alert("test")
+        alert("StartGL");
+        let canvas = document.getElementById("canvas3D"); //wyszukanie obiektu w strukturze strony
+        gl = canvas.getContext("experimental-webgl"); //pobranie kontekstu OpenGL'u z obiektu canvas
+        g.viewportWidth = canvas.width; //przypisanie wybranej rozdzielczości do systemu OpenGL
+        gl.viewportHeight = canvas.height;
+
+        //Shadery
+        const vertexShaderSource = `
+          attribute vec3 aVertexPosition;
+          uniform mat4 uMVMatrix;
+          uniform mat4 uPMatrix;
+          void main(void) {
+            gl_Position = uPMatrix * vec4(aVertexPosiiton, 1.0); //Dokonanie transformacji położenia punktów z przestrzeni 3D do przestrzeni obrazu 2D
+          }
+        `;
+        const fragmentShaderSource =`
+          void main(void){
+            gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0); //Ustalenie stałego koloru wszystkich punktów sceny
+          }
+        `;
+
+        letfragmentShader = gl.createShader(gl.FREAGMENT_SHADER); //Stworzenie obiektu shadera
+        let vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(fragmentShader, fragmentShaderSource); //Podpięcia źródła kodu shader
+        gl.shaderSource(vertexShader, vertexShaderSource);
+        gl.compileShader(fragmentShader); //Kompilacja kodu shader
+        gl.compileShader(vertexShader);
+
+        if(!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)){
+          alert(gl.getShaderInfoLog(vertexShader));
+          return null;
+        }
+        let shaderProgram = gl.createProgram(); //Stowrzenie obiektu programu
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+        if(!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) alert ("Could not initialise shaders") // Sprawdzenie ewentualnych błędów
       }
     </script>
   </head>
-  <body>
-    <p>Pierwsza strona.</p>
-
+  <body onload="start()">
+    <canvas id="canvas3D" width="640" height="480" style="border: solid black 1px" ></canvas>
   </body>
-</html>>
+</html>
