@@ -126,7 +126,7 @@ function startGL()
   ];
   Tick();
 } 
-let angle = 45.0; //Macierz transformacji świata - określenie położenia kamery 
+let angle = 0.0; //Macierz transformacji świata - określenie położenia kamery 
 function Tick()
 { 
   angle = angle +1;
@@ -134,10 +134,17 @@ function Tick()
   Math.cos(angle*Math.PI/180.0),-Math.sin(angle*Math.PI/180.0),0,0, //Macierz Rotacji
   Math.sin(angle*Math.PI/180.0),Math.cos(angle*Math.PI/180.0),0,0,
   0,0,1,0.0,
-  0,0,-10,1 //Położenie kamery
+  0,0,-5,1 //Położenie kamery
   ];
-  
-  //alert(uPMatrix);
+  /*let rotateX = [
+  1,0,0,0, //Macierz Rotacji
+  0,Math.cos(angle*Math.PI/180.0),-Math.sin(angle*Math.PI/180.0),0,
+  0,Math.sin(angle*Math.PI/180.0),Math.cos(angle*Math.PI/180.0),0.0,
+  0,0,-5,1 //Położenie kamery
+  ];
+  uMVMatrix = Array();
+  //(mulMatrix(rotateX, rotateZ, uMVMatrix));
+  //alert(uPMatrix);*/
   
   //Render Scene
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight); 
@@ -163,6 +170,21 @@ function Tick()
   gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
    
   setTimeout(Tick,100);
+}
+function mulMatrix(inA, inB, out)
+{
+  //kod mnożenia macierzy 4x4
+  var temp = 0;
+  for(var i=0; i<16; i++){
+    for(var k=0; k<4; k++){
+      for(var j=0; j<4; j++){
+        temp += inA[j+k*4]*inB[k+j*4];
+      }
+    }
+    out.push(temp);
+    temp=0;
+  }
+  return out;
 }
 </script>
 </head>
