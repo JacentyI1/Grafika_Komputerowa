@@ -1,1 +1,6 @@
-Sześcian zmienił kolory każdej z ścian z ziolonego na niebieski, turkusowy, żółty, fioletowy, czerwony oraz zielony.
+Jeżeli w pliku nie zostaną dokonane żadne zmiany, sześcian zmieni kolory każdej ze ścian
+z ziolonego na niebieski, turkusowy, żółty, fioletowy, czerwony oraz zielony.
+
+Po zmianie koloru każdego z punktów można zauważyć że powstaje gradient na obszarze wyrysowanych trójkątów.
+W zmodyfikowanym przeze mnie pliku frontowa ściana jest podzielona w połowie na 2 trójkąty.
+Jeden z nich jest kolorowany zaczynając od barwy białej do barwy czarnej.
