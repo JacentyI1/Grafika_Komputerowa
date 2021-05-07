@@ -7,7 +7,7 @@ var shaderProgram;
 var uPMatrix;
 var vertexPositionBuffer;
 var vertexColorBuffer;
-function mulMatrix(inA, inB)
+function MatrixMul(a,b) //Mnożenie macierzy
 {
   c = [
   0,0,0,0,
@@ -28,6 +28,7 @@ function mulMatrix(inA, inB)
   }
   return c;
 }
+
 function startGL() 
 {
   alert("StartGL");
@@ -126,8 +127,7 @@ function startGL()
     0.0, 1.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 1.0,
     0.0, 1.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 1.0,
   ]
-
- vertexColorBuffer = gl.createBuffer();
+  vertexColorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColor), gl.STATIC_DRAW);
   vertexColorBuffer.itemSize = 3;
@@ -147,23 +147,55 @@ function startGL()
   ];
   Tick();
 } 
-let angle = 45.0; //Macierz transformacji świata - określenie położenia kamery 
+//let angle = 45.0; //Macierz transformacji świata - określenie położenia kamery
+var angleZ = 0.0;
+var angleY = 0.0;
+var angleX = 0.0;
+var movZ = -10.0;
+var movX = 0.0;
+var movY = 0.0;
 function Tick()
-{ 
-  //angle = angle +1;
-  let rotateZ = [
-  Math.cos(angle*Math.PI/180.0),-Math.sin(angle*Math.PI/180.0),0,0, //Macierz Rotacji
-  Math.sin(angle*Math.PI/180.0),Math.cos(angle*Math.PI/180.0),0,0,
-  0,0,1,0.0,
-  0,0,-10,1 //Położenie kamery
+{  
+  let uMVMatrix = [
+  1,0,0,0, //Macierz jednostkowa
+  0,1,0,0,
+  0,0,1,0,
+  0,0,0,1
   ];
-  let rotateX = [
-  1,0,0,0, //Macierz Rotacji
-  0,Math.cos(angle*Math.PI/180.0),-Math.sin(angle*Math.PI/180.0),0,
-  0,Math.sin(angle*Math.PI/180.0),Math.cos(angle*Math.PI/180.0),0.0,
-  0,0,-10,1 //Położenie kamery
+  
+  let uMVRotZ = [
+  +Math.cos(angleZ*Math.PI/180.0),+Math.sin(angleZ*Math.PI/180.0),0,0,
+  -Math.sin(angleZ*Math.PI/180.0),+Math.cos(angleZ*Math.PI/180.0),0,0,
+  0,0,1,0,
+  0,0,0,1
   ];
-  uMVMatrix = mulMatrix(rotateX, rotateZ);
+  
+  let uMVRotY = [
+  +Math.cos(angleY*Math.PI/180.0),0,-Math.sin(angleY*Math.PI/180.0),0,
+  0,1,0,0,
+  +Math.sin(angleY*Math.PI/180.0),0,+Math.cos(angleY*Math.PI/180.0),0,
+  0,0,0,1
+  ];
+  
+  let uMVRotX = [
+  1,0,0,0,
+  0,+Math.cos(angleX*Math.PI/180.0),+Math.sin(angleX*Math.PI/180.0),0,
+  0,-Math.sin(angleX*Math.PI/180.0),+Math.cos(angleX*Math.PI/180.0),0,
+  0,0,0,1
+  ];
+  
+  let uMVTranslateZ = [
+  1,0,0,0,
+  0,1,0,0,
+  0,0,1,0,
+  movX,movY,movZ,1
+  ];
+  
+
+  uMVMatrix = MatrixMul(uMVMatrix,uMVRotX);
+  uMVMatrix = MatrixMul(uMVMatrix,uMVRotY);
+  uMVMatrix = MatrixMul(uMVMatrix,uMVRotZ);
+  uMVMatrix = MatrixMul(uMVMatrix,uMVTranslateZ);
   //alert(uPMatrix);
   
   //Render Scene
@@ -191,9 +223,23 @@ function Tick()
    
   setTimeout(Tick,100);
 }
-function handlekeydown(e){
-  if(e.keyCode==87) angle=angle+1.0; //Klawisz W
-  if(e.keyCode==83) angle=angle-1.0; //Klawisz S
+function handlekeydown(e)
+{
+ if(e.keyCode==87) angleX = angleX+1.0; //W
+ if(e.keyCode==83) angleX = angleX-1.0; //S
+ if(e.keyCode==68) angleY = angleY+1.0; //D
+ if(e.keyCode==65) angleY = angleY-1.0; //A
+ if(e.keyCode==81) angleZ = angleZ+1.0; //Q
+ if(e.keyCode==69) angleZ = angleZ-1.0; //E
+ if(e.keyCode==74) movX = movX - 0.2; //J
+ if(e.keyCode==75) movZ = movZ - 0.2;//K
+ if(e.keyCode==76) movX = movX + 0.2;//L
+ if(e.keyCode==73) movZ = movZ + 0.2;//I
+ if(e.keyCode==85) movY = movY + 0.2;//U
+ if(e.keyCode==79) movY = movY - 0.2;//O
+ 
+ //alert(e.keyCode);
+ //alert(angleX);
 }
 </script>
 </head>
