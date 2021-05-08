@@ -80,58 +80,103 @@ function startGL()
   
   //Opis sceny 3D, położenie punktów w przestrzeni 3D w formacie X,Y,Z 
   let vertexPosition = [
-  //Top
-    -1.0, +1.0, -1.0,  -1.0, +1.0, +1.0,  +1.0, +1.0, +1.0, //3 punkty po 3 składowe - X1,Y1,Z1, X2,Y2,Z2, X3,Y3,Z3 - 1 trójkąt
-    -1.0, +1.0, -1.0,  +1.0, +1.0, +1.0,  +1.0, +1.0, -1.0,
-  //Left
-    -1.0, -1.0, +1.0,  -1.0, +1.0, +1.0,  -1.0, -1.0, -1.0,
-    -1.0, -1.0, -1.0,  -1.0, +1.0, +1.0,  -1.0, +1.0, -1.0,
-  //Right
-    +1.0, +1.0, +1.0,  +1.0, -1.0, +1.0,  +1.0, -1.0, -1.0,
-    +1.0, +1.0, +1.0,  +1.0, -1.0, -1.0,  +1.0, +1.0, -1.0,
-  //Front
-    +1.0, -1.0, +1.0,  +1.0, +1.0, +1.0,  -1.0, -1.0, +1.0,
-    -1.0, +1.0, +1.0,  -1.0, -1.0, +1.0,  +1.0, +1.0, +1.0,
-  //Back
-    +1.0, +1.0, -1.0,  +1.0, -1.0, -1.0,  -1.0, -1.0, -1.0,
-    +1.0, +1.0, -1.0,  -1.0, -1.0, -1.0,  -1.0, +1.0, -1.0,
-  //Bottom
-    -1.0, -1.0, +1.0,  -1.0, -1.0, -1.0,  +1.0, -1.0, +1.0,
-    +1.0, -1.0, +1.0,  -1.0, -1.0, -1.0,  +1.0, -1.0, -1.0
+  //Floor
+    -11.0, -1.0, -22.0,   +11.0, -1.0, -22.0,   -11.0, -1.0, 0.0,
+    -11.0, -1.0, 0.0,     +11.0, -1.0, 0.0,     +11.0, -1.0, -22.0,  
+  //Front Border
+    //Left part
+    -1.0, -1.0, 0.0,    -1.0, +1.0, 0.0,    -11.0, -1.0, 0.0,
+    -11.0, -1.0, 0.0,   -11.0, +1.0, 0.0,   -1.0, +1.0, 0.0,
+    //Right part
+    +1.0, -1.0, 0.0,    +1.0, +1.0, 0.0,    +11.0, -1.0, 0.0,
+    +11.0, -1.0, 0.0,   +11.0, +1.0, 0.0,   +1.0, +1.0, 0.0,
+  //Left Border
+    -11.0, -1.0, -22.0,   -11.0, +1.0, -22.0,   -11.0, -1.0, 0.0,
+    -11.0, -1.0, 0.0,     -11.0, +1.0, 0.0,     -11.0, +1.0, -22.0,
+  //Right Border
+    +11.0, -1.0, -22.0,   +11.0, +1.0, -22.0,   +11.0, -1.0, 0.0,
+    +11.0, -1.0, 0.0,     +11.0, +1.0, 0.0,     +11.0, +1.0, -22.0,
+  //Back Border
+    //Left part
+    -1.0, -1.0, -22.0,    -1.0, +1.0, -22.0,    -11.0, -1.0, -22.0,
+    -11.0, -1.0, -22.0,   -11.0, +1.0, -22.0,   -1.0, +1.0, -22.0,
+    //Right part
+    +1.0, -1.0, -22.0,    +1.0, +1.0, -22.0,    +11.0, -1.0, -22.0,
+    +11.0, -1.0, -22.0,   +11.0, +1.0, -22.0,   +1.0, +1.0, -22.0,
+  //Walls
+  //#1
+    -1.0, -1.0, 0.0,  -1.0, +1.0, 0.0,  -1.0, -1.0, -18.0,
+    -1.0, -1.0, -18.0,  -1.0, +1.0, -18.0,  -1.0, +1.0, 0.0,
+  //#2
+    +1.0, -1.0, 0.0,  +1.0, +1.0, 0.0,  +1.0, -1.0, -18.0,
+    +1.0, -1.0, -18.0,  +1.0, +1.0, -18.0,  +1.0, +1.0, 0.0,
+  //#3
+    -3.0, -1.0, -2.0,  -3.0, +1.0, -2.0,  -3.0, -1.0, -20.0,
+    -3.0, -1.0, -20.0,  -3.0, +1.0, -20.0,  -3.0, +1.0, -2.0,
+     //#4
+     +3.0, -1.0, -2.0,  +3.0, +1.0, -2.0,  +3.0, -1.0, -20.0,
+    +3.0, -1.0, -20.0,  +3.0, +1.0, -20.0,  +3.0, +1.0, -2.0,
+    //#5
+    -3.0, -1.0, -20.0,  -3.0, +1.0, -20.0,  +3.0, -1.0, -20.0,
+    +3.0, -1.0, -20.0,  +3.0, +1.0, -20.0,  -3.0, +1.0, -20.0,
+    //#6
+    -1.0, -1.0, -20.0,  -1.0, +1.0, -20.0,  -1.0, -1.0, -22.0,
+    -1.0, -1.0, -22.0,  -1.0, +1.0, -22.0,  -1.0, +1.0, -20.0
   ]
   
   vertexPositionBuffer = gl.createBuffer(); //Stworzenie tablicy w pamieci karty graficznej
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPosition), gl.STATIC_DRAW);
   vertexPositionBuffer.itemSize = 3; //zdefiniowanie liczby współrzednych per wierzchołek
-  vertexPositionBuffer.numItems = 12; //Zdefinoiowanie liczby punktów w naszym buforze
+  vertexPositionBuffer.numItems = 26; //Zdefinoiowanie liczby punktów w naszym buforze
   
   //Opis sceny 3D, kolor każdego z wierzchołków
   let vertexColor = [
   //Top
-    1.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 0.0, //3 punkty po 3 składowe - R1,G1,B1, R2,G2,B2, R3,G3,B3 - 1 trójkąt
-    1.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 0.0,
-  //Left
+    1.0, 0.65, 0.0,  1.0, 0.65, 0.0,  1.0, 0.65, 0.0, //3 punkty po 3 składowe - R1,G1,B1, R2,G2,B2, R3,G3,B3 - 1 trójkąt
+    1.0, 0.65, 0.0,  1.0, 0.65, 0.0,  1.0, 0.65, 0.0,
+
     0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+    
     0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
-  //Right
     0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+    
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
     0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
-  //Front
-    1.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, 1.0, 0.0,
-    1.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, 1.0, 0.0,
-  //Back
-    1.0, 0.0, 1.0,  1.0, 0.0, 1.0,  1.0, 0.0, 1.0,
-    1.0, 0.0, 1.0,  1.0, 0.0, 1.0,  1.0, 0.0, 1.0,
-  //Bottom
-    0.0, 1.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 1.0,
-    0.0, 1.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 1.0,
+    
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+    
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+    
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0,
+    
+    0.0, 1.0, 0.0,  0.0, 1.0, 0.0,  0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0,  0.0, 0.0, 1.0,  0.0, 0.0, 1.0
   ]
   vertexColorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColor), gl.STATIC_DRAW);
   vertexColorBuffer.itemSize = 3;
-  vertexColorBuffer.numItems = 12;
+  vertexColorBuffer.numItems = 26;
   
   
   //Macierze opisujące położenie wirtualnej kamery w przestrzenie 3D
@@ -151,7 +196,7 @@ function startGL()
 var angleZ = 0.0;
 var angleY = 0.0;
 var angleX = 0.0;
-var movZ = -10.0;
+var movZ = -8.0;
 var movX = 0.0;
 var movY = 0.0;
 function Tick()
@@ -191,11 +236,13 @@ function Tick()
   movX,movY,movZ,1
   ];
   
-
+  uMVMatrix = MatrixMul(uMVMatrix,uMVTranslateZ);
+  
   uMVMatrix = MatrixMul(uMVMatrix,uMVRotX);
+  
   uMVMatrix = MatrixMul(uMVMatrix,uMVRotY);
   uMVMatrix = MatrixMul(uMVMatrix,uMVRotZ);
-  uMVMatrix = MatrixMul(uMVMatrix,uMVTranslateZ);
+  
   //alert(uPMatrix);
   
   //Render Scene
@@ -231,13 +278,34 @@ function handlekeydown(e)
  if(e.keyCode==65) angleY = angleY-1.0; //A
  if(e.keyCode==81) angleZ = angleZ+1.0; //Q
  if(e.keyCode==69) angleZ = angleZ-1.0; //E
- if(e.keyCode==74) movX = movX - 0.2; //J
- if(e.keyCode==75) movZ = movZ - 0.2;//K
- if(e.keyCode==76) movX = movX + 0.2;//L
- if(e.keyCode==73) movZ = movZ + 0.2;//I
- if(e.keyCode==85) movY = movY + 0.2;//U
- if(e.keyCode==79) movY = movY - 0.2;//O
- 
+ if(angleY==0)
+ {
+  if(e.keyCode==74) movX = movX + 0.2; //J
+  if(e.keyCode==75) movZ = movZ - 0.2; //K
+  if(e.keyCode==76) movX = movX - 0.2; //L
+  if(e.keyCode==73) movZ = movZ + 0.2; //I
+ }
+ else
+ {
+  if(e.keyCode==74) { //J
+    movX = movX + (0.2*Math.cos(angleY*Math.PI/180.0));
+    movZ = movZ + (0.2*Math.sin(angleY*Math.PI/180.0));
+  }
+  if(e.keyCode==75) { //K
+    movZ = movZ - (0.2*Math.cos(angleY*Math.PI/180.0));
+    movX = movX + (0.2*Math.sin(angleY*Math.PI/180.0));
+  }
+  if(e.keyCode==76) { //L
+    movX = movX - (0.2*Math.cos(angleY*Math.PI/180.0));
+    movZ = movZ - (0.2*Math.sin(angleY*Math.PI/180.0));
+  }
+  if(e.keyCode==73) { //I
+    movZ = movZ + (0.2*Math.cos(angleY*Math.PI/180.0));
+    movX = movX - (0.2*Math.sin(angleY*Math.PI/180.0));
+  }
+ }
+ if(e.keyCode==85) movY = movY + 0.2; //U
+ if(e.keyCode==79) movY = movY - 0.2; //O
  //alert(e.keyCode);
  //alert(angleX);
 }
