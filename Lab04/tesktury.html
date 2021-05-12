@@ -650,15 +650,8 @@ function handlekeydown(e)
  if(e.keyCode==65) angleY = angleY-2.0; //A
  if(e.keyCode==81) angleZ = angleZ+2.0; //Q
  if(e.keyCode==69) angleZ = angleZ-2.0; //E
- if(angleY==0)
- {
-  if(e.keyCode==74) movX = movX + 0.2; //J
-  if(e.keyCode==75) movZ = movZ - 0.2; //K
-  if(e.keyCode==76) movX = movX - 0.2; //L
-  if(e.keyCode==73) movZ = movZ + 0.2; //I
- }
- else
- {
+
+ 
   if(e.keyCode==74) { //J
     movX = movX + (0.2*Math.cos(angleY*Math.PI/180.0));
     movZ = movZ + (0.2*Math.sin(angleY*Math.PI/180.0));
@@ -674,7 +667,8 @@ function handlekeydown(e)
   if(e.keyCode==73) { //I
     movZ = movZ + (0.2*Math.cos(angleY*Math.PI/180.0));
     movX = movX - (0.2*Math.sin(angleY*Math.PI/180.0));
-  }
+    //movY = movY + (0.2*Math.cos(angleX*Math.Pi/180.0));
+  
  }
  if(e.keyCode==85) movY = movY + 0.2; //U
  if(e.keyCode==79) movY = movY - 0.2; //O
@@ -688,7 +682,7 @@ function handlekeydown(e)
 <p>Sterowanie:<br>
   <p2>
     I,J,K,L, U,O- przesuwanie kamerą<br>
-    W,A,S,D, - obrót kamerą
+    W,A,S,D,Q,E - obrót kamerą
   </p2> 
 </p>
 </body>
