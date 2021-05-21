@@ -139,13 +139,13 @@ function createRectCoords2(p1u,p1v,p2u,p2v,p3u,p3v,p4u,p4v)
   let theta = 360/12;
   let smallR = 2.0;
   let bigR = 5.0;
-  for(let elevation=-90; elevation< 90; elevation+= phi)
+  for(let elevation=-180; elevation< 180; elevation+= phi)
   {
-    let radiusXY = (bigR+smallR)*Math.cos(elevation*Math.PI/180);
-    let radiusXY2 = (bigR+smallR)*Math.cos((elevation+phi)*Math.PI/180);
+    let radiusXY = bigR+smallR*Math.cos(elevation*Math.PI/180);
+    let radiusXY2 = bigR+smallR*Math.cos((elevation+phi)*Math.PI/180);
     let radiusZ = smallR*Math.sin(elevation*Math.PI/180);
     let radiusZ2 = smallR*Math.sin((elevation+phi)*Math.PI/180);
-    for(let angle = 0; angle < 360; angle+= theta)
+    for(let angle = -180; angle < 180; angle+= theta)
     {
       let px1 = radiusXY*Math.cos(angle*Math.PI/180);
       let py1 = radiusXY*Math.sin(angle*Math.PI/180);
@@ -171,12 +171,12 @@ function createRectCoords2(p1u,p1v,p2u,p2v,p3u,p3v,p4u,p4v)
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPosition), gl.STATIC_DRAW);
   vertexPositionBuffer.itemSize = 3; //zdefiniowanie liczby współrzednych per wierzchołek
-  vertexPositionBuffer.numItems = vertexPosition.length/9; //Zdefinoiowanie liczby punktów w naszym buforze
+  vertexPositionBuffer.numItems = vertexPosition.length; //Zdefinoiowanie liczby punktów w naszym buforze
   
   //Opis sceny 3D, kolor każdego z wierzchołków
   let vertexColor = []; //3 punkty po 3 składowe - R1,G1,B1, R2,G2,B2, R3,G3,B3 - 1 trójkąt
-  for(let elevation=-90; elevation< 90; elevation+= phi){
-    for(let angle = 0; angle < 360; angle+= theta)
+  for(let elevation=-180; elevation< 180; elevation+= phi){
+    for(let angle = -180; angle < 180; angle+= theta)
     {
       vertexColor.push(...createRectColor(1.0,1.0,1.0));
     }
@@ -186,11 +186,11 @@ function createRectCoords2(p1u,p1v,p2u,p2v,p3u,p3v,p4u,p4v)
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexColor), gl.STATIC_DRAW);
   vertexColorBuffer.itemSize = 3;
-  vertexColorBuffer.numItems = vertexColor.length/9;
+  vertexColorBuffer.numItems = vertexColor.length;
   
   let vertexCoords = []; //3 punkty po 2 składowe - U1,V1, U2,V2, U3,V3 - 1 trójkąt
-  for(let elevation=-90; elevation< 90; elevation+= phi){
-    for(let angle = 0; angle < 360; angle+= theta)
+  for(let elevation=-180; elevation< 180; elevation+= phi){
+    for(let angle = -180; angle < 180; angle+= theta)
     {
       vertexCoords.push(...createRectCoords(0,0,1,0,0,1));
     }
@@ -201,7 +201,7 @@ function createRectCoords2(p1u,p1v,p2u,p2v,p3u,p3v,p4u,p4v)
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexCoordsBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoords), gl.STATIC_DRAW);
   vertexCoordsBuffer.itemSize = 2;
-  vertexCoordsBuffer.numItems = vertexCoords.length/6;
+  vertexCoordsBuffer.numItems = vertexCoords.length;
   
   textureBuffer = gl.createTexture();
   var textureImg = new Image();
@@ -273,10 +273,12 @@ var movY = 0.0;
   0,0,1,0,
   movX,movY,movZ,1
   ];
+  
   uMVMatrix = MatrixMul(uMVMatrix,uMVRotX);
   uMVMatrix = MatrixMul(uMVMatrix,uMVRotY);
-  uMVMatrix = MatrixMul(uMVMatrix,uMVRotZ);
   uMVMatrix = MatrixMul(uMVMatrix,uMVTranslateZ);
+  uMVMatrix = MatrixMul(uMVMatrix,uMVRotZ);
+  
   //alert(uPMatrix);
   
   //Render Scene
@@ -320,32 +322,11 @@ function handlekeydown(e)
  if(e.keyCode==65) angleY = angleY-2.0; //A
  if(e.keyCode==81) angleZ = angleZ+2.0; //Q
  if(e.keyCode==69) angleZ = angleZ-2.0; //E
- if(angleY==0)
- {
-  if(e.keyCode==74) movX = movX + 0.2; //J
-  if(e.keyCode==75) movZ = movZ - 0.2; //K
-  if(e.keyCode==76) movX = movX - 0.2; //L
-  if(e.keyCode==73) movZ = movZ + 0.2; //I
- }
- else
- {
-  if(e.keyCode==74) { //J
-    movX = movX + (0.2*Math.cos(angleY*Math.PI/180.0));
-    movZ = movZ + (0.2*Math.sin(angleY*Math.PI/180.0));
-  }
-  if(e.keyCode==75) { //K
-    movZ = movZ - (0.2*Math.cos(angleY*Math.PI/180.0));
-    movX = movX + (0.2*Math.sin(angleY*Math.PI/180.0));
-  }
-  if(e.keyCode==76) { //L
-    movX = movX - (0.2*Math.cos(angleY*Math.PI/180.0));
-    movZ = movZ - (0.2*Math.sin(angleY*Math.PI/180.0));
-  }
-  if(e.keyCode==73) { //I
-    movZ = movZ + (0.2*Math.cos(angleY*Math.PI/180.0));
-    movX = movX - (0.2*Math.sin(angleY*Math.PI/180.0));
-  }
- }
+ if(e.keyCode==74) movX = movX + 0.2; //J
+ if(e.keyCode==75) movZ = movZ - 0.2; //K
+ if(e.keyCode==76) movX = movX - 0.2; //L
+ if(e.keyCode==73) movZ = movZ + 0.2; //I
+ 
  if(e.keyCode==85) movY = movY + 0.2; //U
  if(e.keyCode==79) movY = movY - 0.2; //O
  //alert(e.keyCode);
@@ -355,6 +336,7 @@ function handlekeydown(e)
 </head>
 <body onload="startGL()" onkeydown="handlekeydown(event)">
 <canvas id="canvas3D" width="640" height="480" style="border: solid black 1px"></canvas>
-<img id="textureImg" src="Tex.png">
+<p>Obracanie torusem: W,S,A,D,Q,E<br>
+Ruch kamerą: I,K,J,L,U,O</p>
 </body>
 </html>
