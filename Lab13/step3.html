@@ -9,6 +9,8 @@ var vertexPositionBuffer;
 var vertexColorBuffer;
 var vertexCoordsBuffer;
 var vertexNormalBuffer;
+var vertexBiNormalBuffer;
+
 function MatrixMul(a,b) //Mnożenie macierzy
 {
   let c = [
@@ -30,6 +32,7 @@ function MatrixMul(a,b) //Mnożenie macierzy
   }
   return c;
 }
+
 function MatrixTransposeInverse(m)
 {
   let r = [
@@ -42,18 +45,22 @@ function MatrixTransposeInverse(m)
   r[1] = -m[1]*m[10]*m[15] + m[1]*m[14]*m[11] + m[2]*m[9]*m[15] - m[2]*m[13]*m[11] - m[3]*m[9]*m[14] + m[3]*m[13]*m[10];
   r[2] = m[1]*m[6]*m[15] - m[1]*m[14]*m[7] - m[2]*m[5]*m[15] + m[2]*m[13]*m[7] + m[3]*m[5]*m[14] - m[3]*m[13]*m[6];
   r[3] = -m[1]*m[6]*m[11] + m[1]*m[10]*m[7] + m[2]*m[5]*m[11] - m[2]*m[9]*m[7] - m[3]*m[5]*m[10] + m[3]*m[9]*m[6];
+
   r[4] = -m[4]*m[10]*m[15] + m[4]*m[14]*m[11] + m[6]*m[8]*m[15] - m[6]*m[12]*m[11] - m[7]*m[8]*m[14] + m[7]*m[12]*m[10];
   r[5] = m[0]*m[10]*m[15] - m[0]*m[14]*m[11] - m[2]*m[8]*m[15] + m[2]*m[12]*m[11] + m[3]*m[8]*m[14] - m[3]*m[12]*m[10];
   r[6] = -m[0]*m[6]*m[15] + m[0]*m[14]*m[7] + m[2]*m[4]*m[15] - m[2]*m[12]*m[7] - m[3]*m[4]*m[14] + m[3]*m[12]*m[6];
   r[7] = m[0]*m[6]*m[11] - m[0]*m[10]*m[7] - m[2]*m[4]*m[11] + m[2]*m[8]*m[7] + m[3]*m[4]*m[10] - m[3]*m[8]*m[6];
+
   r[8] = m[4]*m[9]*m[15] - m[4]*m[13]*m[11] - m[5]*m[8]*m[15] + m[5]*m[12]*m[11] + m[7]*m[8]*m[13] - m[7]*m[12]*m[9];
   r[9] = -m[0]*m[9]*m[15] + m[0]*m[13]*m[11] + m[1]*m[8]*m[15] - m[1]*m[12]*m[11] - m[3]*m[8]*m[13] + m[3]*m[12]*m[9];
   r[10] = m[0]*m[5]*m[15] - m[0]*m[13]*m[7] - m[1]*m[4]*m[15] + m[1]*m[12]*m[7] + m[3]*m[4]*m[13] - m[3]*m[12]*m[5];
   r[11] = -m[0]*m[5]*m[11] + m[0]*m[9]*m[7] + m[1]*m[4]*m[11] - m[1]*m[8]*m[7] - m[3]*m[4]*m[9] + m[3]*m[8]*m[5];
+
   r[12] = -m[4]*m[9]*m[14] + m[4]*m[13]*m[10] + m[5]*m[8]*m[14] - m[5]*m[12]*m[10] - m[6]*m[8]*m[13] + m[6]*m[12]*m[9];
   r[13] = m[0]*m[9]*m[14] - m[0]*m[13]*m[10] - m[1]*m[8]*m[14] + m[1]*m[12]*m[10] + m[2]*m[8]*m[13] - m[2]*m[12]*m[9];
   r[14] = -m[0]*m[5]*m[14] + m[0]*m[13]*m[6] + m[1]*m[4]*m[14] - m[1]*m[12]*m[6] - m[2]*m[4]*m[13] + m[2]*m[12]*m[5];
   r[15] = m[0]*m[5]*m[10] - m[0]*m[9]*m[6] - m[1]*m[4]*m[10] + m[1]*m[8]*m[6] + m[2]*m[4]*m[9] - m[2]*m[8]*m[5];
+
   var det = m[0]*r[0] + m[1]*r[4] + m[2]*r[8] + m[3]*r[12];
   for (var i = 0; i < 16; i++) r[i] /= det;
   
@@ -65,6 +72,7 @@ function MatrixTransposeInverse(m)
   
   return rt;
 }
+
 function CreateIdentytyMatrix()
 {
   return [
@@ -74,6 +82,7 @@ function CreateIdentytyMatrix()
   0,0,0,1
   ];
 }
+
 function CreateTranslationMatrix(tx,ty,tz)
 {
   return  [
@@ -83,6 +92,7 @@ function CreateTranslationMatrix(tx,ty,tz)
   tx,ty,tz,1
   ];
 }
+
 function CreateScaleMatrix(sx,sy,sz)
 {
   return [
@@ -92,6 +102,7 @@ function CreateScaleMatrix(sx,sy,sz)
   0,0,0,1
   ];
 }
+
 function CreateRotationZMatrix(angleZ)
 {
   return [
@@ -101,6 +112,7 @@ function CreateRotationZMatrix(angleZ)
   0,0,0,1
   ];
 }
+
 function CreateRotationYMatrix(angleY)
 {
   return [
@@ -110,6 +122,7 @@ function CreateRotationYMatrix(angleY)
   0,0,0,1
   ];
 }
+
 function CreateRotationXMatrix(angleX)
 {
   return [
@@ -119,6 +132,7 @@ function CreateRotationXMatrix(angleX)
   0,0,0,1
   ];
 }
+
 function createRect(mx,my,mz,dax,day,daz,dbx,dby,dbz)
 {
   p1x = mx;             p1y = my;             p1z = mz;
@@ -131,6 +145,20 @@ function createRect(mx,my,mz,dax,day,daz,dbx,dby,dbz)
                         
   return vertexPosition;
 }
+
+function createRectCoords(mu,mv,dau,dav,dbu,dbv)
+{
+  let p1u = mu;             p1v = mv;            
+  let p2u = mu + dau;       p2v = mv + dav;      
+  let p3u = mu + dbu;       p3v = mv + dbv;      
+  let p4u = mu + dau + dbu; p4v = mv + dav + dbv;
+  
+  let vertexCoord = [p1u,p1v, p2u,p2v, p4u,p4v,  //Pierwszy trójkąt
+                     p1u,p1v, p4u,p4v, p3u,p3v]; //Drugi trójkąt
+                        
+  return vertexCoord;
+}
+
 function createNormal(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z) //Wyznaczenie wektora normalnego dla trójkąta
 {
   let v1x = p2x - p1x;
@@ -154,27 +182,40 @@ function createNormal(p1x,p1y,p1z,p2x,p2y,p2z,p3x,p3y,p3z) //Wyznaczenie wektora
   let vertexNormal = [v3x,v3y,v3z, v3x,v3y,v3z, v3x,v3y,v3z];
   return vertexNormal;
 }
+//https://apoorvaj.io/exploring-bump-mapping-with-webgl/
 function CreateBox(x,y,z,dx,dy,dz)
 {
   //Opis sceny 3D, położenie punktów w przestrzeni 3D w formacie X,Y,Z 
   let vertexPosition = []; //3 punkty po 3 składowe - X1,Y1,Z1, X2,Y2,Z2, X3,Y3,Z3 - 1 trójkąt
   let vertexNormal = [];
+  let vertexBiNormal = [];
+  let vertexCoords = [];
+
+  //Pierwszy trójkąt
+  vertexPosition.push(...[-1,-1,1, 1,-1,1, 1,1,1]); //Położenie wierzchołków
+  vertexNormal.push(  ...[ 0, 0,1, 0, 0,1, 0,0,1]); //Wektor normalny
+  vertexBiNormal.push(...[0,1,0, 0,1,0, 0,1,0]); //WektorBiNormalny -> Up vector -> kierunek w górę na trójkącie
+  vertexCoords.push(...[0,0, 1,0, 1,1]); //Współrzędne tekstury
+
+  //Drugi trójkąt
+  vertexPosition.push(...[-1,-1,1, 1,1,1, -1,1,1]); 
+  vertexNormal.push(  ...[ 0, 0,1, 0,0,1,  0,0,1]);
+  vertexBiNormal.push(...[ 0, 1,0, 0,1,0,  0,1,0]);
+  vertexCoords.push(...[0,0, 1,1, 0,1]);
+
+  //trzeci
+  vertexPosition.push(...[1,-1,-1, 1,1,1, 1,1,-1]); 
+  vertexNormal.push(  ...[ 0, 0,1, 0,0,1,  0,0,1]);
+  vertexBiNormal.push(...[ 0, -1,0, 0,-1,0,  0,-1,0]);
+  vertexCoords.push(...[0,0, 1,1, 0,1]);
   
-  vertexPosition.push(...createRect(-1,-1,-1,0,2,0,2,0,0));
-  vertexPosition.push(...createRect(-1,-1,-1,0,0,2,0,2,0));
-  vertexPosition.push(...createRect(-1,-1,-1,2,0,0,0,0,2));
-  
-  vertexPosition.push(...createRect(1,1,1,-2,0,0,0,-2,0));
-  vertexPosition.push(...createRect(1,1,1,0,-2,0,0,0,-2));
-  vertexPosition.push(...createRect(1,1,1,0,0,-2,-2,0,0));
-  //
-  for(let i=0;i<vertexPosition.length;i=i+9)
-  {
-    vertexNormal.push(...createNormal(vertexPosition[i+0],vertexPosition[i+1],vertexPosition[i+2],vertexPosition[i+3],vertexPosition[i+4],vertexPosition[i+5],vertexPosition[i+6],vertexPosition[i+7],vertexPosition[i+8]));
-  }
-  
-  return [vertexPosition, vertexNormal];
+  vertexPosition.push(...[1,-1,-1, 1,-1,1, 1,1,1]); 
+  vertexNormal.push(  ...[ 0, 0,1, 0,0,1,  0,0,1]);
+  vertexBiNormal.push(...[ 0, -1,0, 0,-1,0,  0,-1,0]);
+  vertexCoords.push(...[0,0, 1,1, 0,1]);
+  return [vertexPosition, vertexNormal, vertexBiNormal, vertexCoords];
 }
+
 function startGL() 
 {
   alert("StartGL");
@@ -188,33 +229,50 @@ function startGL()
     precision highp float;
     attribute vec3 aVertexPosition; 
     attribute vec3 aVertexNormal;
+    attribute vec3 aVertexBiNormal;
+    attribute vec2 aVertexCoords;
     uniform mat4 uMMatrix;
     uniform mat4 uInvMMatrix;
     uniform mat4 uVMatrix;
     uniform mat4 uPMatrix;
     varying vec3 vPos;
     varying vec3 vNormal;
+    varying vec3 vBiNormal;
+    varying vec2 vTexUV;
     uniform float uNormalMul;
     void main(void) {
       vPos = vec3(uMMatrix * vec4(aVertexPosition, 1.0));
       gl_Position = uPMatrix * uVMatrix * vec4(vPos,1.0); //Dokonanie transformacji położenia punktów z przestrzeni 3D do przestrzeni obrazu (2D)
       vNormal = normalize(mat3(uInvMMatrix) * uNormalMul*aVertexNormal); //Obrot wektorow normalnych
+      vBiNormal = normalize(mat3(uInvMMatrix) * uNormalMul*aVertexBiNormal);
+      vTexUV = aVertexCoords;
     }
   `;
   const fragmentShaderSource = `
     precision highp float;
     varying vec3 vPos;
     varying vec3 vNormal;
+    varying vec3 vBiNormal;
+    varying vec2 vTexUV;
     uniform sampler2D uSampler;
     uniform vec3 uLightPosition;
     void main(void) {
-       vec3 lightDirection = normalize(uLightPosition - vPos);
-       float brightness = max(dot(vNormal,lightDirection), 0.0);
-      //gl_FragColor = vec4(vColor,1.0); //Ustalenie stałego koloru wszystkich punktów sceny
-      //gl_FragColor = texture2D(uSampler,vTexUV)*vec4(vColor,1.0); //Odczytanie punktu tekstury i przypisanie go jako koloru danego punktu renderowaniej figury
-      //gl_FragColor = vec4((vNormal+vec3(1.0,1.0,1.0))/2.0,1.0); 
-      //gl_FragColor = clamp(texture2D(uSampler,vTexUV) * vec4(brightness,brightness,brightness,1.0),0.0,1.0);
+      vec3 lightDirection = normalize(uLightPosition - vPos);
+      vec3 texNormal = normalize(vec3(texture2D(uSampler,vTexUV))*2.0-1.0);
+      //(0-1)*2-> (0-2)-1-> (-1, 1)
+      
+      vec3 vTangent = normalize(cross(vBiNormal,vNormal));
+      mat3 RotTexNormal = mat3(vTangent,vBiNormal,vNormal);
+      
+      //texNormal.x = -texNormal.x; //Włączenie wklęsłości
+      //texNormal.y = -texNormal.y; 
+      
+      vec3 localNormal = RotTexNormal*texNormal;
+      //vec3 localNormal = vNormal;
+      float brightness = max(dot(localNormal,lightDirection), 0.0);
       gl_FragColor = clamp(vec4(1.0,1.0,0.0,1.0) * vec4(brightness,brightness,brightness,1.0),0.0,1.0);
+      //gl_FragColor = clamp(vec4(texNormal,1.0) * vec4(brightness,brightness,brightness,1.0),0.0,1.0);
+      //gl_FragColor = clamp(vec4((localNormal+1.0)/2.0,1.0) * vec4(brightness,brightness,brightness,1.0),0.0,1.0);
     }
   `;
   let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER); //Stworzenie obiektu shadera 
@@ -241,10 +299,12 @@ function startGL()
   //Opis sceny 3D, położenie punktów w przestrzeni 3D w formacie X,Y,Z 
   let vertexPosition; //3 punkty po 3 składowe - X1,Y1,Z1, X2,Y2,Z2, X3,Y3,Z3 - 1 trójkąt
   let vertexNormal;
+  let vertexBiNormal;
+  let vertexCoords;
   
   //[vertexPosition, vertexColor, vertexCoords, vertexNormal] = CreateShpere(0,0,0,2, 6, 12); 
-  [vertexPosition, vertexNormal] = CreateBox(0,0,0,1,1,1);
-  
+  [vertexPosition, vertexNormal, vertexBiNormal, vertexCoords] = CreateBox(0,0,0,1,1,1);
+  console.log(vertexCoords);
   vertexPositionBuffer = gl.createBuffer(); //Stworzenie tablicy w pamieci karty graficznej
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexPosition), gl.STATIC_DRAW);
@@ -257,6 +317,29 @@ function startGL()
   vertexNormalBuffer.itemSize = 3;
   vertexNormalBuffer.numItems = vertexNormal.length/9;
   
+  vertexBiNormalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBiNormalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexBiNormal), gl.STATIC_DRAW);
+  vertexBiNormalBuffer.itemSize = 3;
+  vertexBiNormalBuffer.numItems = vertexBiNormal.length/9;
+  
+  vertexCoordsBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexCoordsBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexCoords), gl.STATIC_DRAW);
+  vertexCoordsBuffer.itemSize = 2;
+  vertexCoordsBuffer.numItems = vertexCoords.length/6;
+  
+  textureBuffer = gl.createTexture();
+  var textureImg = new Image();
+  textureImg.onload = function() { //Wykonanie kodu automatycznie po załadowaniu obrazka
+    gl.bindTexture(gl.TEXTURE_2D, textureBuffer);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImg); //Faktyczne załadowanie danych obrazu do pamieci karty graficznej
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); //Ustawienie parametrów próbkowania tekstury
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  }
+  textureImg.src="NormalMap.gif"; //Nazwa obrazka
+  //textureImg.src="ColorMap.gif";
   //Macierze opisujące położenie wirtualnej kamery w przestrzenie 3D
   let aspect = gl.viewportWidth/gl.viewportHeight;
   let fov = 45.0 * Math.PI / 180.0; //Określenie pola widzenia kamery
@@ -271,42 +354,34 @@ function startGL()
   Tick();
 } 
 //let angle = 45.0; //Macierz transformacji świata - określenie położenia kamery 
+
 var angleZ = 0.0;
 var angleY = 0.0;
 var angleX = 0.0;
 var KameraPositionZ = -8.0;
-var Object1PositionX = 0.0;
+
+var Object1PositionX = 2.0;
 var Object1PositionY = 0.0;
-var Object1PositionZ = 0.0;
-var Object1AngleZ = 0.0;
-var Object2PositionX = 1.0;
+var Object1PositionZ = -0.0;
+
+var Object2PositionX = -2.0;
 var Object2PositionY = 0.0;
-var Object2PositionZ = 0.0;
-var Object2AngleZ = 0.0;
-var Object3PositionX = 1.0;
-var Object3PositionY = 0.0;
-var Object3PositionZ = 0.0;
-var Object3AngleZ = 0.0;
+var Object2PositionZ = -0.0;
+
 var LightSize = 0.1;
-var Object1Sizedx = 1.0;
-var Object1Sizedy = 0.2;
-var Object1Sizedz = 0.1;
-var Object2Sizedx = 1.0;
-var Object2Sizedy = 0.2;
-var Object2Sizedz = 0.1;
-var Object3Sizedx = 0.4;
-var Object3Sizedy = 0.2;
-var Object3Sizedz = 0.1;
+var Object1Size = 1.0;
+var Object2Size = 0.5;
+
 var LightPositionX = 0;
-var LightPositionY = 0;
-var LightPositionZ = 3;
+var LightPositionY = 2;
+var LightPositionZ = 2;
+
 
 function Tick()
 { 
   let uMMatrix0 = CreateIdentytyMatrix(); 
   let uMMatrix1 = CreateIdentytyMatrix();
   let uMMatrix2 = CreateIdentytyMatrix();
-  let uMMatrix3 = CreateIdentytyMatrix();
   
   let uVMatrix = CreateIdentytyMatrix();
   
@@ -316,32 +391,11 @@ function Tick()
   uVMatrix = MatrixMul(uVMatrix,CreateRotationZMatrix(angleZ));
   uVMatrix = MatrixMul(uVMatrix,CreateTranslationMatrix(0,0,KameraPositionZ));
   
-  uMMatrix1 = MatrixMul(uMMatrix1,CreateScaleMatrix(Object1Sizedx,Object1Sizedy,Object1Sizedz));
-  uMMatrix1 = MatrixMul(uMMatrix1,CreateTranslationMatrix(Object1Sizedx,0.0,0.0)); 
-  uMMatrix1 = MatrixMul(uMMatrix1,CreateRotationZMatrix(Object1AngleZ));
+  uMMatrix1 = MatrixMul(uMMatrix1,CreateScaleMatrix(Object1Size,Object1Size,Object1Size));
   uMMatrix1 = MatrixMul(uMMatrix1,CreateTranslationMatrix(Object1PositionX,Object1PositionY,Object1PositionZ));  
   
-  uMMatrix2 = MatrixMul(uMMatrix2,CreateScaleMatrix(Object2Sizedx,Object2Sizedy,Object2Sizedz));
-  uMMatrix2 = MatrixMul(uMMatrix2,CreateTranslationMatrix(Object2Sizedx,0.0,0.0)); 
-  uMMatrix2 = MatrixMul(uMMatrix2,CreateRotationZMatrix(Object2AngleZ));
+  uMMatrix2 = MatrixMul(uMMatrix2,CreateScaleMatrix(Object2Size,Object2Size,Object2Size));
   uMMatrix2 = MatrixMul(uMMatrix2,CreateTranslationMatrix(Object2PositionX,Object2PositionY,Object2PositionZ));
-  
-  uMMatrix2 = MatrixMul(uMMatrix2,CreateTranslationMatrix(Object1Sizedx,0.0,0.0)); 
-  uMMatrix2 = MatrixMul(uMMatrix2,CreateRotationZMatrix(Object1AngleZ));
-  uMMatrix2 = MatrixMul(uMMatrix2,CreateTranslationMatrix(Object1PositionX,Object1PositionY,Object1PositionZ));
-  
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateScaleMatrix(Object3Sizedx,Object3Sizedy,Object3Sizedz));
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateTranslationMatrix(Object3Sizedx,0.0,0.0)); 
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateRotationZMatrix(Object3AngleZ));
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateTranslationMatrix(Object3PositionX,Object3PositionY,Object3PositionZ));
-  
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateTranslationMatrix(Object2Sizedx,0.0,0.0)); 
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateRotationZMatrix(Object2AngleZ));
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateTranslationMatrix(Object2PositionX,Object2PositionY,Object2PositionZ));
-  
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateTranslationMatrix(Object1Sizedx,0.0,0.0)); 
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateRotationZMatrix(Object1AngleZ));
-  uMMatrix3 = MatrixMul(uMMatrix3,CreateTranslationMatrix(Object1PositionX,Object1PositionY,Object1PositionZ));
   
   uMMatrix0 = MatrixMul(uMMatrix0,CreateScaleMatrix(LightSize,LightSize,LightSize));
   uMMatrix0 = MatrixMul(uMMatrix0,CreateTranslationMatrix(LightPositionX,LightPositionY,LightPositionZ));
@@ -362,6 +416,10 @@ function Tick()
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uVMatrix"), false, new Float32Array(uVMatrix));
   gl.uniform1f(gl.getUniformLocation(shaderProgram, "uNormalMul"),1.0);
   
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, textureBuffer);
+  gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
+  
   
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix1));
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix1)));
@@ -374,6 +432,14 @@ function Tick()
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexNormalBuffer);
   gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, "aVertexNormal"), vertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
   
+  gl.enableVertexAttribArray(gl.getAttribLocation(shaderProgram, "aVertexBiNormal"));  //Przekazywanie wektorów normalnych
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexBiNormalBuffer);
+  gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, "aVertexBiNormal"), vertexBiNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  
+  gl.enableVertexAttribArray(gl.getAttribLocation(shaderProgram, "aVertexCoords"));  //Pass the geometry
+  gl.bindBuffer(gl.ARRAY_BUFFER, vertexCoordsBuffer);
+  gl.vertexAttribPointer(gl.getAttribLocation(shaderProgram, "aVertexCoords"), vertexCoordsBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  
   gl.uniform3f(gl.getUniformLocation(shaderProgram, "uLightPosition"),LightPositionX,LightPositionY,LightPositionZ);
   
   gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
@@ -381,11 +447,6 @@ function Tick()
   //Drugi Obiekt
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix2));
   gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix2)));
-  gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
-  
-  //Trzeci Obiekt
-  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uMMatrix"), false, new Float32Array(uMMatrix3));
-  gl.uniformMatrix4fv(gl.getUniformLocation(shaderProgram, "uInvMMatrix"), false, new Float32Array(MatrixTransposeInverse(uMMatrix3)));
   gl.drawArrays(gl.TRIANGLES, 0, vertexPositionBuffer.numItems*vertexPositionBuffer.itemSize); //Faktyczne wywołanie rendrowania
   
   //Obiekt Światła
@@ -415,18 +476,6 @@ function handlekeydown(e)
  if(e.keyCode==75) LightPositionY=LightPositionY-0.1;
  if(e.keyCode==85) LightPositionZ=LightPositionZ+0.1;
  if(e.keyCode==79) LightPositionZ=LightPositionZ-0.1;
- 
- //Z X
- if(e.keyCode==88) Object1AngleZ=Object1AngleZ-0.1;
- if(e.keyCode==90) Object1AngleZ=Object1AngleZ+0.1;
- 
- //C V
- if(e.keyCode==67) Object2AngleZ=Object2AngleZ-0.1;
- if(e.keyCode==86) Object2AngleZ=Object2AngleZ+0.1;
- 
- //B N
- if(e.keyCode==66) Object3AngleZ=Object3AngleZ-0.1;
- if(e.keyCode==78) Object3AngleZ=Object3AngleZ+0.1;
 }
 </script>
 </head>
